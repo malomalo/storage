@@ -6,9 +6,10 @@ class Storage::Filesystem < Storage
   attr_reader :host, :path, :prefix
   
   def initialize(configs={})
+    super
     @host = configs[:host]
     @path = configs[:path]
-    @prefix = configs[:prefix] || 'blobs'
+    @prefix = configs[:prefix]
   end
   
   def local?
@@ -20,11 +21,11 @@ class Storage::Filesystem < Storage
   end
   
   def path(key)
-    File.join([@prefix, partition(key)].compact)
+    File.join(['/', @prefix, partition(key)].compact)
   end
 
   def destination(key)
-    File.join([@path, @prefix, partition(key)].compact)
+    File.join([@path, partition(key)].compact)
   end
 
   def exists?(key)
@@ -50,13 +51,13 @@ class Storage::Filesystem < Storage
     FileUtils.rm(destination(key), force: true)
   end
   
-  def last_modified(path)
-    File.mtime(destination(path))
+  def last_modified(key)
+    File.mtime(destination(key))
   end
   
-  def mime_type(path)
+  def mime_type(key)
     command = Terrapin::CommandLine.new("file", '-b --mime-type :file')
-    command.run({ file: destination(path) }).strip
+    command.run({ file: destination(key) }).strip
   end
   
 end

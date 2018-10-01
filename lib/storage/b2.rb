@@ -3,17 +3,17 @@ require File.expand_path('../../storage', __FILE__)
 
 class Storage::B2 < Storage
 
-  attr_reader :account_id, :application_key, :bucket, :prefix
+  attr_reader :account_id, :bucket, :prefix
   
   def initialize(configs={})
+    super
     @bucket = configs[:bucket]
     @prefix = configs[:prefix]
     @account_id = configs[:account_id]
-    @application_key = configs[:application_key]
 
     @client = ::B2.new({
       account_id: @account_id,
-      application_key: @application_key
+      application_key: configs[:application_key]
     }).buckets.find { |b| b.name == @bucket }
   end
   

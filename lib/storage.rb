@@ -1,5 +1,16 @@
 class Storage
+
+  attr_reader :partition, :partition_depth
   
+  def initialize(configs={})
+    @partition = configs.has_key?(:partition) || configs.has_key?(:partition_depth)
+    @partition_depth = if configs[:partition].is_a?(Integer)
+      configs[:partition]
+    else
+      configs[:partition_depth] || 3
+    end
+  end
+
   def copy_to_tempfile(key)
     tmpfile = Tempfile.new([File.basename(key), File.extname(key)], binmode: true)
     cp(key, tmpfile.path)
@@ -17,15 +28,10 @@ class Storage
   private
   
   def partition(value)
-    return value unless @configs[:partition]
+    return value unless @partition
     
-    partition_depth = if @configs[:partition].is_a?(Integer)
-      @configs[:partition]
-    else
-      @configs[:partition_depth] || 3
-    end
     split = value.scan(/.{1,4}/)
-    split.shift(partition_depth).join("/") + split.join("")
+    split.shift(@partition_depth).join("/") + split.join("")
   end
   
 end
