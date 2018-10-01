@@ -48,7 +48,7 @@ class Storage::S3 < Storage
   end
 
   def destination(key)
-    [@prefix, partition(key)].compact.join('/').gsub(/^\//, '')
+    File.join([@prefix, partition(key)].compact).gsub(/^\//, '')
   end
 
   def exists?(key)
@@ -60,7 +60,7 @@ class Storage::S3 < Storage
 
     object_for(destination(key)).upload_file(file, {
       content_type: meta_info[:content_type],
-      content_disposition: meta_info[:filename] ? "inline; filename=\"#{meta_info[:filename]}\"" : nil
+      content_disposition: meta_info[:filename] ? "inline; filename=\"#{meta_info[:filename]}\"" : nil,
       content_md5: meta_info[:md5],
       storage_class: @storage_class,
       acl: @acl
@@ -69,10 +69,18 @@ class Storage::S3 < Storage
   
   def cp(key, to)
     object_for(destination(key)).download_file(to)
+  rescue Aws::S3::Errors::NotFound => e
+    raise Errno::ENOENT.new(e.message)
   end
   
   def read(key, &block)
-    object_for(destination(key)).get({}, &block)
+    if block
+      object_for(destination(key)).get({}, &block)
+    else
+      object_for(destination(key)).get.body
+    end
+  rescue Aws::S3::Errors::NotFound => e
+    raise Errno::ENOENT.new(e.message)
   end
 
   def delete(key)
@@ -81,10 +89,14 @@ class Storage::S3 < Storage
   
   def last_modified(key)
     object_for(destination(key)).last_modified
+  rescue Aws::S3::Errors::NotFound => e
+    raise Errno::ENOENT.new(e.message)
   end
 
   def mime_type(key)
     object_for(destination(key)).content_type
+  rescue Aws::S3::Errors::NotFound => e
+    raise Errno::ENOENT.new(e.message)
   end
   
 end

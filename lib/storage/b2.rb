@@ -44,16 +44,16 @@ class Storage::B2 < Storage
     })
   end
   
-  def download(key, to=nil, &block)
-    @client.download(destination(key), to, &block)
-  end
-
   def cp(key, to)
     @client.download(destination(key), to)
+  rescue B2::NotFound => e
+    raise Errno::ENOENT.new(e.message)
   end
 
   def read(key, &block)
-    File.read(destination(key), &block)
+    @client.download(destination(key), &block)
+  rescue B2::NotFound => e
+    raise Errno::ENOENT.new(e.message)
   end
 
   def delete(key)
@@ -62,14 +62,20 @@ class Storage::B2 < Storage
   
   def sha1(key)
     @client.file(destination(key)).sha1
+  rescue B2::NotFound => e
+    raise Errno::ENOENT.new(e.message)
   end
 
   def last_modified(key)
     @client.file(destination(key)).uploaded_at
+  rescue B2::NotFound => e
+    raise Errno::ENOENT.new(e.message)
   end
   
   def mime_type(key)
     @client.file(destination(key)).mime_type
+  rescue B2::NotFound => e
+    raise Errno::ENOENT.new(e.message)
   end
   
 end
