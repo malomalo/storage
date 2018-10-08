@@ -17,7 +17,7 @@ class Storage::S3 < Storage
     super
     @region = configs[:region] ||= 'us-east-1'
     @bucket = configs[:bucket]
-    @bucket_host_alias = configs[:bucket_host_alias]
+    @virtual_host = configs[:virtual_host] || false
     @prefix = configs[:prefix]
     @storage_class = configs[:storage_class] || 'STANDARD'
     @acl = configs[:acl] || 'private'
@@ -43,7 +43,8 @@ class Storage::S3 < Storage
 
   def url(key, expires_in: nil)
     object_for(destination(key)).presigned_url(:get, {
-      expires_in: (expires_in || 3_600)
+      virtual_host: @virtual_host,
+      expires_in: (expires_in || 900)
     })
   end
 
