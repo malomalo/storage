@@ -15,7 +15,7 @@ class Storage::S3 < Storage
   
   def initialize(configs={})
     super
-    @region = configs[:region] ||= 'us-east-1'
+    @region = configs[:region] || 'us-east-1'
     @bucket = configs[:bucket]
     @virtual_host = configs[:virtual_host] || false
     @prefix = configs[:prefix]
