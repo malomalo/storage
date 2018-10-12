@@ -57,9 +57,10 @@ class Storage::S3 < Storage
   end
 
   def write(key, file, meta_info={})
-    file = file.tempfile if file.class.name == "ActionDispatch::Http::UploadedFile"
-
-    object_for(destination(key)).upload_file(file, {
+    # If we pass a File type object to upload_file we need to make sure
+    # it is rewound, otherwise it will upload part of the file then timeout
+    # (30+ seconds), then retry. For now we'll just pass the path
+    object_for(destination(key)).upload_file(file.respond_to?(:path) ? file.path : file, {
       content_type: meta_info[:content_type],
       content_disposition: meta_info[:filename] ? "inline; filename=\"#{meta_info[:filename]}\"" : nil,
       content_md5: meta_info[:md5],
