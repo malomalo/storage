@@ -21,8 +21,8 @@ class Storage::B2 < Storage
     false
   end
 
-  def url(key, expires_in: 3_600)
-    @client.get_download_url(destination(key), expires_in: expires_in)
+  def url(key, **options)
+    @client.get_download_url(destination(key), **options)
   end
 
   def destination(key)
