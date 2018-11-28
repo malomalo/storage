@@ -22,7 +22,7 @@ class Storage::B2 < Storage
   end
 
   def url(key, expires_in: 3_600)
-    @client.get_download_url(@bucket, destination(key), options)
+    @client.get_download_url(@bucket, destination(key), expires_in: expires_in)
   end
 
   def destination(key)
