@@ -1,4 +1,6 @@
 class StandardStorage
+  autoload(:B2, './standard_storage/b2.rb')
+  autoload(:S3, './standard_storage/b2.rb')
 
   attr_reader :partition, :partition_depth
   
