@@ -1,7 +1,7 @@
 require 'aws-sdk-s3'
-require File.expand_path('../../storage', __FILE__)
+require File.expand_path('../../standard_storage', __FILE__)
 
-class Storage::S3 < Storage
+class StandardStorage::S3 < StandardStorage
 
   attr_reader :region, :bucket, :bucket_host_alias, :prefix
 

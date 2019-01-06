@@ -1,7 +1,7 @@
 require 'b2'
-require File.expand_path('../../storage', __FILE__)
+require File.expand_path('../../standard_storage', __FILE__)
 
-class Storage::B2 < Storage
+class StandardStorage::B2 < StandardStorage
 
   attr_reader :account_id, :bucket, :prefix
   

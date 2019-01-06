@@ -1,12 +1,12 @@
-require File.expand_path("../lib/storage/version", __FILE__)
+require File.expand_path("../lib/standard_storage/version", __FILE__)
 
 Gem::Specification.new do |s|
-  s.name        = "storage"
-  s.version     = Storage::VERSION
+  s.name        = "standardstorage"
+  s.version     = StandardStorage::VERSION
   s.authors     = ["Jon Bracy"]
   s.email       = ["jonbracy@gmail.com"]
   s.homepage    = "https://github.com/malomalo/storage"
-  s.summary     = %q{A simple API for multiple storage backends like B2, S3, and the FileSystem}
+  s.summary     = %q{API for multiple storage backends}
   s.description = %q{A simple API for multiple storage backends like B2, S3, and the FileSystem}
 
   s.files         = `git ls-files`.split("\n")

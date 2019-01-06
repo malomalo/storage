@@ -1,4 +1,4 @@
-class Storage
+class StandardStorage
 
   attr_reader :partition, :partition_depth
   

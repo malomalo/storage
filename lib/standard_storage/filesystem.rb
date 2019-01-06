@@ -1,7 +1,7 @@
 require 'fileutils'
-require File.expand_path('../../storage', __FILE__)
+require File.expand_path('../../standard_storage', __FILE__)
 
-class Storage::Filesystem < Storage
+class StandardStorage::Filesystem < StandardStorage
 
   attr_reader :host, :path, :prefix
   
