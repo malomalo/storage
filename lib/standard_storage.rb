@@ -1,5 +1,6 @@
 class StandardStorage
   autoload(:B2, File.expand_path('../standard_storage/b2', __FILE__))
+  autoload(:Filesystem, File.expand_path('../standard_storage/filesystem', __FILE__))
   autoload(:S3, File.expand_path('../standard_storage/s3', __FILE__))
 
   attr_reader :partition, :partition_depth
