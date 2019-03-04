@@ -3,18 +3,18 @@ require File.expand_path('../../standard_storage', __FILE__)
 
 class StandardStorage::B2 < StandardStorage
 
-  attr_reader :account_id, :bucket, :prefix
+  attr_reader :key_id, :bucket, :prefix
   
   def initialize(configs={})
     super
     @bucket = configs[:bucket]
     @prefix = configs[:prefix]
-    @account_id = configs[:account_id]
+    @key_id = configs[:key_id]
 
     @client = ::B2.new({
-      account_id: @account_id,
-      application_key: configs[:application_key]
-    }).buckets.find { |b| b.name == @bucket }
+      key_id: @key_id,
+      secret: configs[:secret]
+    }).bucket(@bucket)
   end
   
   def local?
