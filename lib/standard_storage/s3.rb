@@ -41,10 +41,11 @@ class StandardStorage::S3 < StandardStorage
     @bucket_host_alias || "#{@bucket}.s3.amazonaws.com"
   end
 
-  def url(key, expires_in: nil)
+  def url(key, expires_in: nil, disposition: nil)
     object_for(destination(key)).presigned_url(:get, {
       virtual_host: @virtual_host,
-      expires_in: (expires_in || 900)
+      expires_in: (expires_in || 900),
+      response_content_disposition: disposition
     })
   end
 
