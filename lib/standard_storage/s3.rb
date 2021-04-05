@@ -63,7 +63,7 @@ class StandardStorage::S3 < StandardStorage
     # (30+ seconds), then retry. For now we'll just pass the path
     object_for(destination(key)).upload_file(file.respond_to?(:path) ? file.path : file, {
       content_type: meta_info[:content_type],
-      content_disposition: meta_info[:filename] ? "inline; filename=\"#{meta_info[:filename]}\"" : nil,
+      content_disposition: meta_info[:filename] ? "inline; filename=\"#{URI.encode_www_form_component(meta_info[:filename].force_encoding(Encoding::UTF_8)).gsub("%2F", "/")}\"" : nil,
       content_md5: meta_info[:md5],
       storage_class: @storage_class,
       acl: @acl

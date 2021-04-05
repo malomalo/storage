@@ -40,7 +40,7 @@ class StandardStorage::B2 < StandardStorage
     @client.upload_file(destination(key), file, {
       mime_type: meta_info[:content_type],
       sha1: meta_info[:sha1],
-      content_disposition: meta_info[:filename] ? "inline; filename=\"#{meta_info[:filename]}\"" : nil
+      content_disposition: meta_info[:filename] ? "inline; filename=\"#{::B2.encode(meta_info[:filename])}\"" : nil
     })
   end
   
