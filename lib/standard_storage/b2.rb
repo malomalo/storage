@@ -11,10 +11,7 @@ class StandardStorage::B2 < StandardStorage
     @prefix = configs[:prefix]
     @key_id = configs[:key_id]
 
-    @client = ::B2.new({
-      key_id: @key_id,
-      secret: configs[:secret]
-    }).bucket(@bucket)
+    @client = ::B2.new(key_id: @key_id, secret: configs[:secret]).bucket(@bucket)
   end
   
   def local?
