@@ -34,11 +34,11 @@ class StandardStorage::B2 < StandardStorage
     file = file.tempfile if file.class.name == "ActionDispatch::Http::UploadedFile"
     file = File.open(file) if file.is_a?(String)
     
-    @client.upload_file(destination(key), file, {
+    @client.upload_file(destination(key), file,
       mime_type: meta_info[:content_type],
       sha1: meta_info[:sha1],
       content_disposition: meta_info[:filename] ? "inline; filename=\"#{::B2.encode(meta_info[:filename])}\"" : nil
-    })
+    )
   end
   
   def cp(key, to)
