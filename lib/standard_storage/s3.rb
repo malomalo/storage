@@ -23,6 +23,7 @@ class StandardStorage::S3 < StandardStorage
     @acl = configs[:acl] || 'private'
     
     @client = Aws::S3::Client.new({
+      endpoint: configs[:endpoint],
       access_key_id: configs[:access_key_id],
       secret_access_key: configs[:secret_access_key],
       region: @region
