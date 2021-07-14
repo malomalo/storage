@@ -21,17 +21,10 @@ class StandardStorage::S3 < StandardStorage
     @prefix = configs[:prefix]
     @storage_class = configs[:storage_class] || 'STANDARD'
     @acl = configs[:acl] || 'private'
-    
-    @client = Aws::S3::Client.new({
-      endpoint: configs[:endpoint],
-      access_key_id: configs[:access_key_id],
-      secret_access_key: configs[:secret_access_key],
-      region: @region
-    })
   end
   
   def object_for(key)
-    Aws::S3::Object.new(@bucket, key, client: @client)
+    Aws::S3::Object.new(@bucket, key, client: client)
   end
   
   def local?
@@ -102,5 +95,16 @@ class StandardStorage::S3 < StandardStorage
   rescue Aws::S3::Errors::NotFound => e
     raise Errno::ENOENT.new(e.message)
   end
+
+  private
   
+  def client
+    @client ||= Aws::S3::Client.new({
+      endpoint: configs[:endpoint],
+      access_key_id: configs[:access_key_id],
+      secret_access_key: configs[:secret_access_key],
+      region: @region
+    })
+  end
+    
 end
