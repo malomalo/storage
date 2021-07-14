@@ -15,6 +15,9 @@ class StandardStorage::S3 < StandardStorage
   
   def initialize(configs={})
     super
+    @endpoint = configs[:endpoint]
+    @access_key_id = configs[:access_key_id]
+    @secret_access_key = configs[:secret_access_key]
     @region = configs[:region] || 'us-east-1'
     @bucket = configs[:bucket]
     @virtual_host = configs[:virtual_host] || false
@@ -100,9 +103,9 @@ class StandardStorage::S3 < StandardStorage
   
   def client
     @client ||= Aws::S3::Client.new({
-      endpoint: configs[:endpoint],
-      access_key_id: configs[:access_key_id],
-      secret_access_key: configs[:secret_access_key],
+      endpoint: @endpoint,
+      access_key_id: @access_key_id,
+      secret_access_key: @secret_access_key,
       region: @region
     })
   end
