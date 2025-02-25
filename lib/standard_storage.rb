@@ -14,8 +14,10 @@ class StandardStorage
     end
   end
 
-  def copy_to_tempfile(key)
-    tmpfile = Tempfile.new([File.basename(key), File.extname(key)], binmode: true)
+  def copy_to_tempfile(key, basename: nil)
+    basename ||= [File.basename(key), File.extname(key)]
+    
+    tmpfile = Tempfile.new(basename, binmode: true)
     cp(key, tmpfile.path)
     if block_given?
       begin
