@@ -30,6 +30,10 @@ class StandardStorage::S3 < StandardStorage
     Aws::S3::Object.new(@bucket, key, client: client)
   end
   
+  def transfer_manager
+    @manager ||= Aws::S3::TransferManager.new(client: client)
+  end
+  
   def local?
     false
   end
@@ -58,17 +62,17 @@ class StandardStorage::S3 < StandardStorage
     # If we pass a File type object to upload_file we need to make sure
     # it is rewound, otherwise it will upload part of the file then timeout
     # (30+ seconds), then retry. For now we'll just pass the path
-    object_for(destination(key)).upload_file(file.respond_to?(:path) ? file.path : file, {
+    transfer_manager.upload_file(file.respond_to?(:path) ? file.path : file, bucket: @bucket, key: destination(key),
       content_type: meta_info[:content_type],
       content_disposition: meta_info[:filename] ? "inline; filename=\"#{URI.encode_www_form_component(meta_info[:filename].force_encoding(Encoding::UTF_8)).gsub("%2F", "/")}\"" : nil,
       content_md5: meta_info[:md5],
       storage_class: @storage_class,
       acl: @acl
-    })
+    )
   end
   
   def cp(key, to)
-    object_for(destination(key)).download_file(to)
+    transfer_manager.download_file(to, bucket: @bucket, key: destination(key))
   rescue Aws::S3::Errors::NotFound => e
     raise Errno::ENOENT.new(e.message)
   end
